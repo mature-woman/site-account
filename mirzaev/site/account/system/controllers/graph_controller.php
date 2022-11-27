@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace mirzaev\site\mirzaev\controllers;
+namespace mirzaev\site\account\controllers;
 
 // Файлы проекта
-use mirzaev\site\mirzaev\controllers\core;
+use mirzaev\site\account\controllers\core;
 
 /**
  * Контроллер графика
  *
- * @package mirzaev\site\mirzaev\controllers
+ * @package mirzaev\site\account\controllers
  * @author Arsen Mirzaev Tatyano-Muradovich <arsen@mirzaev.sexy>
  */
 final class graph_controller extends core
