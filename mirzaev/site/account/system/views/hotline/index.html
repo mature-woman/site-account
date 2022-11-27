@@ -1,0 +1,28 @@
+{% block css %}
+<link type="text/css" rel="stylesheet" href="/css/hotline.css">
+{% endblock %}
+
+{% block body %}
+{% if hotline.id != empty %}
+<section id="{{ hotline.id }}" class="hotline unselectable" data-hotline="true" {% for name, value in hotline.parameters
+    %} data-hotline-{{ name }}="{{value}}" {% endfor %} {% for name, value in hotline.attributes %} {{ name
+    }}="{{value}}" {% endfor %}>
+    {% for element in hotline.elements %}
+    <{{element.tag??'article'}}>{{ element.content }}</{{element.tag??'article'}}>
+    {% endfor %}
+</section>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="/js/hotline.js" defer></script>
+{% endblock %}
+
+{% block js_init %}
+<script>
+    document.addEventListener('hotline.loaded', function (e) {
+        // Запуск препроцессора бегущих строк
+        e.detail.hotline.preprocessing();
+    });
+</script>
+{% endblock %}

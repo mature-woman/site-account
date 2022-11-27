@@ -1,0 +1,86 @@
+{% block css %}
+<link type="text/css" rel="stylesheet" href="/css/graph.css">
+<link type="text/css" rel="stylesheet" href="/css/icon_close.css" />
+{% endblock %}
+
+{% block main %}
+{% if graph.id != empty %}
+<section id="{{ graph.id }}" class="graph unselectable" {% for name, value in graph.attributes %} {{ name }}="{{value}}"
+    {% endfor %}>
+    {% for element in graph.elements %}
+    <{{element.tag??'article'}}>{{ element.content }}</{{element.tag??'article'}}>
+    {% endfor %}
+</section>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+<script type="module" src="/js/victor.js" defer></script>
+<script type="module" src="/js/graph.js" defer></script>
+{% endblock %}
+
+{% block js_init %}
+<script>
+    document.addEventListener('graph.loaded', function (e) {
+        // Инициализация графика
+        {% if graph.id != empty %}
+        const core = new e.detail.graph(document.getElementById('{{ graph.id }}'));
+
+        core.write({
+            title: 'бебра'
+        });
+        const mirzaev = core.write({
+            title: 'Арсен Мирзаев',
+            description: ' абабабаба абабабабаабабабабаабабабабаабабабаба абабабаба абабабаба абабабабаабабабаба абабабаба абабабаба абабабабабабаба абабабабаабабабабабаба абабабабаабабабабабаба абабабабаабабабабабаба абабабабаабабабабабаба абабабабаабабабабабаба абабабабаабабабабабаба абабабабаабабабабабаба абабабабаабабабабабаба абабабабаабабабабабаба абабабабаабабаба',
+            cover: 'https://sun9-east.userapi.com/sun9-27/s/v1/ig2/qOBvWvsDwPmMjOTqQbl0TuGHaoMwWQhhd81nxD847v32dT-pyYa9kxw2MY7moQBVBoN4iVLnUZx6WmE4x4HnIwAu.jpg?size=810x1080&quality=95&type=album',
+            link: {
+                name: 'Арсен Мирзаев',
+                title: 'Читать статью полностью',
+                href: 'https://google.com',
+                class: ['source']
+            },
+            popup: 'Для подробной информации читайте статью полностью',
+            color: 'red'
+        });
+        const berbi = core.write({
+            title: 'берби'
+        });
+        const anarchy = core.write({
+            title: 'анархия'
+        });
+        core.connect(
+            berbi,
+            mirzaev);
+        core.connect(
+            anarchy,
+            mirzaev);
+        core.connect(
+            core.write({
+                title: 'бабы'
+            }),
+            mirzaev);
+        core.connect(
+            core.write({
+                title: 'Ксения Велькович',
+                description: 'А меня вписать в кружочек?',
+                cover: 'https://storage.mirzaev.sexy/2022/mirzaev.sexy/nodes/ksenia_velkovich.jpg',
+                link: {
+                    name: 'Ксения Велькович',
+                    title: 'Страница ВКонтакте',
+                    href: 'https://vk.com/id720261644',
+                    class: ['source']
+                }
+            }),
+            mirzaev);
+        core.connect(
+            core.write({
+                title: 'чокопайки'
+            }),
+            mirzaev);
+        core.connect(
+            anarchy,
+            berbi);
+        {% endif %}
+    });
+</script>
+{% endblock %}

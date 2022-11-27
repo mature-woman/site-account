@@ -1,0 +1,52 @@
+main>section#books {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+main>section#books>* {
+    margin-bottom: 20px;
+}
+
+main>section#books>form.upload {
+    width: calc(100% / 3 - 20px - 9px * 2);
+    height: calc(220px - 9px * 2);
+    margin: 5px;
+    margin-right: 20px;
+}
+
+main>section#books>form.upload>p {
+    font-size: 3rem;
+    height: 0.3rem;
+    line-height: 0;
+}
+
+main>section#books>article.book {
+    width: calc(100% / 3 - 20px);
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+main>section#books>article.book:nth-child(3) {
+    width: calc(100% / 3);
+    margin-right: unset;
+}
+
+main>section#books>article.book>img {
+    height: 220px;
+    object-fit: cover;
+    object-position: right;
+    overflow: hidden;
+    clip-path: polygon(5px calc(100% - 5px), calc(100% - 5px) calc(100% - 5px), calc(100% - 5px) 5px, 5px 5px);
+}
+
+main>section#books>article.book>h4 {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    height: 50px;
+    text-align: center;
+}
+
+main>section#books>article.book>p {
+    margin: unset;
+}

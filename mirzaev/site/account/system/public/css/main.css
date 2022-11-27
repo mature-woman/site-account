@@ -1,0 +1,185 @@
+@import url('/fonts/comissioner.ttf');
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --background               : #eee;
+        --background-inverse       : #221e1e;
+        --background-inverse-dark  : #120f0f;
+        --node-background-important: #c3eac3;
+        --node-background-completed: #b0c0b0;
+        --node-background          : #bdb;
+        --connection               : #b2b7b2;
+        --connection-completed     : #d1d1d1;
+        --text                     : #131313;
+        --text-hover               : #292929;
+        --text-active              : #0c0c0c;
+        --text-inverse             : #e6e6e6;
+        --text-inverse-hover       : #fff;
+        --text-inverse-active      : #d0d0d0;
+        --text-red                 : #f8a2a2;
+        --text-red-hover           : #ffbcbc;
+        --text-red-active          : #e69191;
+        --link                     : #3c76ff;
+        --link-hover               : #6594ff;
+        --link-active              : #3064dd;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-light-3: #403939;
+        --background-light-2: #322d2d;
+        --background-light-1: #2b2525;
+        --background-light  : #252020;
+        --background        : #221e1e;
+        --block-background  : ;
+        --node-background   : #221e1e;
+        --text              : #e6e6e6;
+        --text-hover        : #fff;
+        --text-active       : #d0d0d0;
+        --text-inverse      : 'dark';
+        --red-light-1       : #dc4343;
+        --red-light         : #bf3737;
+        --red               : #a43333;
+        --red-dark          : #8d2a2a;
+    }
+}
+
+:root {
+    --grey-light: #c0c0c0;
+    --grey      : #858585;
+    --grey-dark : #565656;
+}
+
+* {
+    text-decoration: none;
+    outline        : none;
+    border         : none;
+    color          : var(--text);
+    font-family    : 'Commissioner', sans-serif;
+    transition     : 0.1s ease-out;
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select  : none;
+    -khtml-user-select   : none;
+    -moz-user-select     : none;
+    -ms-user-select      : none;
+    user-select          : none;
+}
+
+a {
+    color: var(--link);
+}
+
+a:hover {
+    color: var(--link-hover);
+}
+
+a:active {
+    color: var(--link-active);
+}
+
+body {
+    height          : 100vh;
+    margin          : 0;
+    overflow        : hidden;
+    background-color: var(--background);
+}
+
+aside {
+    z-index    : 500;
+    grid-column: 1/ 4;
+    grid-row   : 2;
+    overflow   : hidden;
+}
+
+header {
+    z-index       : 5000;
+    position      : absolute;
+    display       : flex;
+    flex-direction: column;
+    box-shadow    : 2px 0 5px rgba(0, 0, 0, 0.3);
+}
+
+header>menu {
+    margin          : unset;
+    padding         : 20px;
+    display         : flex;
+    flex-direction  : column;
+    flex-grow       : 1;
+    background-color: var(--background-light-1);
+}
+
+header>#account>button#login {
+    z-index: 1500;
+}
+
+header>menu a {
+    margin-bottom: 8px;
+    display      : flex;
+    align-items  : center;
+}
+
+header>menu a:last-child {
+    margin-bottom: unset;
+}
+
+header>menu a svg {
+    margin-right: 8px;
+    height      : 1.2rem;
+    position    : relative;
+}
+
+header>menu a:hover svg {
+    margin-left : -5px;
+    margin-right: 13px;
+}
+
+header>menu a svg path {
+    fill: var(--text);
+}
+
+header>section {
+    background-color: var(--background-light-1);
+}
+
+header :is(button, a[type="button"]) {
+    width           : 100%;
+    height          : 40px;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    cursor          : pointer;
+    background-color: var(--red);
+    transition      : unset;
+}
+
+header button {
+    font-weight   : bold;
+    text-transform: uppercase;
+}
+
+header :is(button, a[type="button"]):hover {
+    background-color: var(--red-light);
+}
+
+header :is(button, a[type="button"]):active {
+    background-color: var(--red-dark);
+}
+
+header>nav {
+    margin-top    : auto;
+    display       : flex;
+    flex-direction: column;
+}
+
+main {
+    z-index: 1000;
+}
+
+footer {
+    z-index : 3000;
+    position: absolute;
+}

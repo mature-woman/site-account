@@ -1,0 +1,33 @@
+section#account {
+    z-index : 10000;
+    right   : 40px;
+    bottom  : 40px;
+    position: absolute;
+    display : flex;
+}
+
+section#account>button#login {
+    width           : 80px;
+    height          : 80px;
+    display         : flex;
+    border-radius   : 100%;
+    cursor          : pointer;
+    overflow        : hidden;
+    background-color: var(--background-inverse);
+}
+
+section#account>button#login>i.icon.authentication {
+    width           : 12px;
+    margin          : auto;
+    color           : var(--text-inverse);
+    background-color: unset;
+}
+
+section#account>button#login:hover>i.icon.authentication {
+    background-color: var(--grey-dark);
+}
+
+
+section#account>button#login:active>i.icon.authentication {
+    background-color: unset;
+}

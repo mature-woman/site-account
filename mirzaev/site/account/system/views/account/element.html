@@ -1,0 +1,21 @@
+{% block css %}
+<link type="text/css" rel="stylesheet" href="/css/account.css">
+<link type="text/css" rel="stylesheet" href="/css/icon_authentication.css">
+{% endblock %}
+
+{% block body %}
+<section id="account">
+    {% if account %}
+    {{ account.getKey() }}
+    {% if vk %}
+    {{ vk.mail }}
+    {% endif %}
+    {% else %}
+    <button id="login" title="Войти в аккаунт" onclick="return account.authentication()"><i class='icon authentication'></i></button>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="/js/account.js"></script>
+{% endblock %}

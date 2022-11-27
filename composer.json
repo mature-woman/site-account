@@ -1,0 +1,57 @@
+{
+    "name": "mirzaev/site-account",
+    "description": "Мой персональный сайт",
+    "readme": "README.md",
+    "keywords": [
+        "site",
+        "api",
+        "authentication",
+        "auth"
+    ],
+    "type": "site",
+    "homepage": "https://git.mirzaev.sexy/mirzaev/site-account",
+    "license": "WTFPL",
+    "authors": [
+        {
+            "name": "Arsen Mirzaev Tatyano-Muradovich",
+            "email": "arsen@mirzaev.sexy",
+            "homepage": "https://mirzaev.sexy",
+            "role": "Programmer"
+        }
+    ],
+    "support": {
+        "email": "arsen@mirzaev.sexy",
+        "wiki": "https://git.mirzaev.sexy/mirzaev/site-account/wiki",
+        "issues": "https://git.mirzaev.sexy/mirzaev/site-account/issues"
+    },
+    "funding": [
+        {
+            "type": "funding",
+            "url": "https://fund.mirzaev.sexy"
+        }
+    ],
+    "require": {
+        "php": "~8.1",
+        "ext-sodium": "~8.1",
+        "mirzaev/minimal": "^2.0.x-dev",
+        "mirzaev/accounts": "~1.2.x-dev",
+        "mirzaev/arangodb": "^1.0.0",
+        "mirzaev/vk": "^5.0",
+        "triagens/arangodb": "~3.9.x-dev",
+        "twig/twig": "^3.4",
+        "guzzlehttp/guzzle": "^7.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "mirzaev\\site\\account\\": "mirzaev/site/account/system"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "mirzaev\\site\\account\\tests\\": "mirzaev/site/account/tests"
+        }
+    }
+}

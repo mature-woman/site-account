@@ -1,0 +1,15 @@
+{% block title %}
+<title>{% if head.title != empty %}{{head.title}}{% else %}Мирзаев{% endif %}</title>
+{% endblock %}
+
+{% block meta %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% for meta in head.metas %}
+<meta {% for name, value in meta.attributes %}{{name}}="{{value}}" {% endfor %}>
+{% endfor %}
+{% endblock %}
+
+{% block css %}
+<link type="text/css" rel="stylesheet" href="/css/main.css" />
+{% endblock %}
