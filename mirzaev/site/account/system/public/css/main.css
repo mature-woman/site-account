@@ -177,6 +177,9 @@ header>nav {
 
 main {
     z-index: 1000;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 footer {

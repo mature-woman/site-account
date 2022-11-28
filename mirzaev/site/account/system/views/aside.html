@@ -1,17 +1,13 @@
-{% use 'account/element.html' with css as account_css, body as account_body, js as account_js %}
 
 {% block css %}
-{{ block('account_css') }}
 {% endblock %}
 
 {% block body %}
 <aside>
-    {{ block('account_body') }}
 </aside>
 {% endblock %}
 
 {% block js %}
-{{ block('account_js') }}
 {% endblock %}
 
 {% block js_init %}
