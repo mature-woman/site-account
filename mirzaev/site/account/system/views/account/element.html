@@ -1,17 +1,38 @@
 {% block css %}
 <link type="text/css" rel="stylesheet" href="/css/account.css">
-<link type="text/css" rel="stylesheet" href="/css/icon_authentication.css">
+<link type="text/css" rel="stylesheet" href="/css/gradient.css">
 {% endblock %}
 
 {% block body %}
-<section id="account">
+<section id="authentication">
     {% if account %}
     {{ account.getKey() }}
     {% if vk %}
     {{ vk.mail }}
     {% endif %}
     {% else %}
-    <button id="login" title="Войти в аккаунт" onclick="return account.authentication()"><i class='icon authentication'></i></button>
+    <section class="header gradient">
+        <img src="/images/what.png" alt="Пользователь">
+        <div class="red"></div>
+        <div class="green"></div>
+        <div class="blue"></div>
+    </section>
+    <b>Предоставить доступ:</b>
+    <ul>
+        <li>Подпункт 2.1.</li>
+        <li>Подпункт 2.2.
+            <ul>
+                <li>Подпункт 2.2.1.</li>
+                <li>Подпункт 2.2.2.</li>
+            </ul>
+        </li>
+        <li>Подпункт 2.3.</li>
+    </ul>
+    <a href="https://mirzaev.sexy">https://mirzaev.sexy</a>
+    <div class="buttons">
+        <button>Принять</button>
+        <button>Заблокировать</button>
+    </div>
     {% endif %}
 </section>
 {% endblock %}

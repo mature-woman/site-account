@@ -1,5 +1,6 @@
 {% extends "core.html" %}
 
+{% use 'account/element.html' with css as account_css, body as account_body, js as account_js %}
 {% use "core.html" with css as core_css, body as core_body, js as core_js, js_init as core_js_init %}
 {% use "header.html" with css as header_css, body as header_body, js as header_js, js_init as header_js_init %}
 {% use "aside.html" with css as aside_css, body as aside_body, js as aside_js, js_init as aside_js_init %}
@@ -10,6 +11,7 @@
 {{ block('header_css') }}
 {{ block('aside_css') }}
 {{ block('graph_css') }}
+{{ block('account_css') }}
 {% endblock %}
 
 {% block body %}
@@ -20,8 +22,8 @@
 <main>
 	<noscript>К сожалению мой сайт ещё пока не готов для работы без javascript</noscript>
 	{% block main %}
-{{ block('graph_main') }}
-{% endblock %}
+	{{ block('account_body') }}
+	{% endblock %}
 </main>
 
 {# {% include 'footer.html' %} #}
@@ -32,6 +34,7 @@
 {{ block('header_js') }}
 {{ block('aside_js') }}
 {{ block('graph_js') }}
+{{ block('account_js') }}
 {% endblock %}
 
 {% block js_init %}

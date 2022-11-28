@@ -1,6 +1,6 @@
 {
     "name": "mirzaev/site-account",
-    "description": "Мой персональный сайт",
+    "description": "API for intersite authentication",
     "readme": "README.md",
     "keywords": [
         "site",
