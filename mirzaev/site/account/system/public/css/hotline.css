@@ -1,0 +1,31 @@
+section.hotline {
+    display: inline-flex;
+    height : 100%;
+}
+
+section.hotline * {
+    transition: unset;
+}
+
+section.hotline:last-child {
+    margin-bottom: unset;
+}
+
+section.hotline>article {
+    margin-right    : 18px;
+    width           : 140px;
+    height          : 190px;
+    display         : flex;
+    align-self      : flex-end;
+    border-radius   : 3px;
+    background-color: var(--background-light-1);
+    box-shadow      : 0px -6px 6px rgba(0, 0, 0, 0.3);
+}
+
+section.hotline>article:last-child {
+    margin-right: unset;
+}
+
+section.hotline>article>* {
+    margin: auto;
+}

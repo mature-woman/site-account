@@ -4,7 +4,7 @@
 {% use "core.html" with css as core_css, body as core_body, js as core_js, js_init as core_js_init %}
 {% use "header.html" with css as header_css, body as header_body, js as header_js, js_init as header_js_init %}
 {% use "aside.html" with css as aside_css, body as aside_body, js as aside_js, js_init as aside_js_init %}
-{% use 'graph/index.html' with css as graph_css, main as graph_main, js as graph_js, js_init as graph_js_init %}
+{% use 'graph/index.html' with css as graph_css, body as graph_body, js as graph_js, js_init as graph_js_init %}
 
 {% block css %}
 {{ block('core_css') }}
@@ -24,9 +24,11 @@
 	{% block main %}
 	{{ block('account_body') }}
 	{% endblock %}
+	{{ block('graph_body') }}
 </main>
 
 {# {% include 'footer.html' %} #}
+{# <div class="background"></div> #}
 {% endblock %}
 
 {% block js %}
