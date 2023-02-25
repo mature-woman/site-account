@@ -61,7 +61,7 @@ class core extends controller
         $expires = time() + 604800;
 
         // Инициализация сессии (без журналирования)
-        $this->variables['session'] = session::initialization($_COOKIE["session"] ?? null, $expires) ?? header('Location: https://mirzaev.sexy/error?code=500&text=Не+удалось+инициализировать+сессию');
+        $this->variables['session'] = new session($_COOKIE["session"] ?? null, $expires) ?? header('Location: https://mirzaev.sexy/error?code=500&text=Не+удалось+инициализировать+сессию');
 
         if ($_COOKIE["session"] ?? null !== $this->variables['session']->hash) {
             // Изменился хеш сессии (подразумевается, что сессия устарела)
@@ -78,7 +78,7 @@ class core extends controller
         }
 
         // Инициализация аккаунта (без журналирования)
-        $this->variables['account'] = session::account($this->variables['session']);
+        $this->variables['account'] = $this->variables['session']->account();
 
         if ($this->variables['account'] instanceof _document) {
             // Инициализирован аккаунт
