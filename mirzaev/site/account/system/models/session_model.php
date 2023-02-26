@@ -222,76 +222,72 @@ final class session_model extends core
   /**
    * Записать
    *
-   * Ищет свойство в инстанции сессии, если не находит, то ищет его в инстанции документа сессии из базы данных,
-   * затем записывает в него переданные данные. Динамическая инициализация свойств происходит в инстанции
-   * документа сессии из базы данных 
+   * Записывает свойство в инстанцию документа сессии из базы данных
    *
-   * @param string $name Название свойства
-   * @param mixed $value Содержимое для записи
+   * @param string $name Название
+   * @param mixed $value Содержимое
    *
    * @return void
    */
   public function __set(string $name, mixed $value = null): void
   {
-    if (isset($this->{$name})) $this->{$name} = $value;
-    else $this->document->{$name} = $value;
+   $this->document->{$name} = $value;
   }
 
   /**
    * Прочитать
    *
-   * Ищет свойство в инстанции сессии, если не находит, то ищет его в инстанции документа сессии из базы данных
+   * Читает свойство из инстанции документа сессии из базы данных
    *
-   * @param string $name Название свойства
+   * @param string $name Название
    *
    * @return mixed Данные свойства инстанции сессии или инстанции документа сессии из базы данных
    */
   public function __get(string $name): mixed
   {
-    return $this->{$name} ?? $this->document->{$name};
+    return $this->document->{$name};
   }
 
   /**
    * Проверить инициализированность
    *
-   * Ищет свойство в инстанции сессии, если не находит, то ищет его в инстанции документа сессии из базы данных,
-   * затем проверяет его инициализированность через встроенную функцию isset()
+   * Проверяет инициализированность свойства в инстанции документа сессии из базы данных
    *
-   * @param string $name Название свойства
+   * @param string $name Название
    *
    * @return bool Свойство инициализировано?
    */
   public function __isset(string $name): bool
   {
-    return isset($this->{$name}) || isset($this->document->{$name});
+    return isset($this->document->{$name});
   }
 
   /**
    * Удалить
    *
-   * Деинициализирует свойство в инстанции сессии и в инстанции документа сессии из базы данных
+   * Деинициализировать свойство в инстанции документа сессии из базы данных
    *
-   * @param string $name Название свойства
+   * @param string $name Название
    *
    * @return void
    */
   public function __unset(string $name): void
   {
-    unset($this->{$name}, $this->document->{$name});
+    unset($this->document->{$name});
   }
 
   /**
    * Выполнить метод
    *
-   * Ищет метод в инстанции сессии, если не находит, то ищет его в инстанции документа сессии из базы данных
+   * Выполнить метод в инстанции документа сессии из базы данных
    *
-   * @param string $name Название метода
+   * @param string $name Название
    * @param array $arguments Аргументы
    *
    * @return void
    */
   public function __call(string $name, array $arguments = []): mixed
   {
-    return method_exists($this, $name) ? $this->{$name}($arguments) : $this->document->{$name}($arguments);
+    return $this->document->{$name}($arguments);
   }
 }

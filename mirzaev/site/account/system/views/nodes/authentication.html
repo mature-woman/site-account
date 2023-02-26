@@ -1,0 +1,30 @@
+{% block css %}
+<link type="text/css" rel="stylesheet" href="/css/account.css">
+<link type="text/css" rel="stylesheet" href="/css/icons/arrow_right.css">
+{% endblock %}
+
+{% block body %}
+<section id="authentication">
+  {% if account %}
+  {{ account.getKey() }}
+  {% if vk %}
+  {{ vk.mail }}
+  {% endif %}
+  {% else %}
+  <section class="header unselectable">
+    <h1>Аутентификация</h1>
+  </section>
+  <section class="body">
+    <label>
+      <input type="text" name="mail" id="mail" value="{{ account.mail ?? session.buffer.mail ?? cookie.buffer_mail }}" oninplut="remember('mail', this.value, 2000)">
+      <button class="accept" onclick="account.check(this.parentElement.querySelector('[name=mail]').value) ? account.authentication() : account.registration()"><i class="arrow right"></i></button>
+    </label>
+    <input type="password" name="password" id="password">
+  </section>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="/js/account.js"></script>
+{% endblock %}
