@@ -35,11 +35,12 @@
         --text              : #e6e6e6;
         --text-hover        : #fff;
         --text-active       : #d0d0d0;
-        --text-inverse      : 'dark';
+        --text-inverse      : #020202;
         --red-light-1       : #dc4343;
         --red-light         : #bf3737;
         --red               : #a43333;
         --red-dark          : #8d2a2a;
+        --input-error       : #6c2424;
     }
 }
 
@@ -71,15 +72,6 @@
     --link-active: #3064dd;
 }
 
-* {
-    text-decoration: none;
-    outline        : none;
-    border         : none;
-    color          : var(--text);
-    font-family    : 'Commissioner', sans-serif;
-    transition     : 0.1s ease-out;
-}
-
 .unselectable {
     -webkit-touch-callout: none;
     -webkit-user-select  : none;
@@ -87,6 +79,28 @@
     -moz-user-select     : none;
     -ms-user-select      : none;
     user-select          : none;
+}
+
+.hidden {
+  display: none !important;
+  opacity: 0;
+}
+
+* {
+    text-decoration: none;
+    outline        : none;
+    border         : none;
+    color          : var(--text);
+    font-family    : Fira, sans-serif;
+    transition     : 0.1s ease-out;
+}
+
+pre, code {
+  font-family: Hack, monospace;
+}
+
+button {
+  cursor: pointer;
 }
 
 a {
@@ -102,10 +116,60 @@ a:active {
     transition: unset;
 }
 
+label {
+  position: relative;
+  height: 26px;
+  display: flex;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+label>i:first-child {
+  left: 8px;
+  top: calc((26px - var(--height)) / 2);
+  position: absolute !important;
+  margin: auto;
+  color: #8c7d7d;
+}
+
+label * {
+  /* color: var(--text-inverse); */
+}
+
+label>input {
+  width: 100%;
+  padding: 0 8px;
+  background-color: var(--background-above-1);
+}
+
+label>input+button {
+  background-color: var(--red);
+}
+
+i+input {
+  padding-left: 30px;
+}
+
+input.error {
+  animation-duration       : 1s;
+  animation-name           : input-error;
+  animation-fill-mode      : forwards;
+  animation-timing-function: ease-in;
+}
+
+section.header>h1 {
+  font-size: 1.3rem;
+  line-height: 1.3rem;
+}
+
+section.header>:is(h2, h3) {
+  font-size: 1.1rem;
+  line-height: 1.1rem;
+}
+
 body {
     height          : 100vh;
     margin          : 0;
-    overflow        : hidden;
     background-color: var(--background);
 }
 
@@ -217,6 +281,8 @@ main {
     height        : 100%;
     display       : flex;
     flex-direction: column;
+    justify-content : center;
+    align-items     : center;
 }
 
 footer {

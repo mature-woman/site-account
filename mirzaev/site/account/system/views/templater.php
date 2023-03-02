@@ -141,7 +141,7 @@ final class templater extends controller implements ArrayAccess
    *
    * @return mixed Данные переменной из реестра глобальных переменных
    */
-  public function &offsetGet(mixed $offset): mixed
+  public function offsetGet(mixed $offset): mixed
   {
     return $this->variables[$offset];
   }

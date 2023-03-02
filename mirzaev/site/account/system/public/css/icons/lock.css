@@ -1,0 +1,28 @@
+i.lock {
+ --width: 12px;
+ --height: 11px;
+ position: relative;
+ margin-top: -12px;
+ width: 12px;
+ height: 11px;
+ display: block;
+ box-sizing: border-box;
+ border: 2px solid;
+ border-top-right-radius: 50%;
+ border-top-left-radius: 50%;
+ border-bottom: transparent;
+}
+
+i.lock::after {
+ left: -4px;
+ top: 9px;
+ position: absolute;
+ width: 16px;
+ height: 10px;
+ display: block;
+ box-sizing: border-box; 
+ content: '';
+ box-shadow: 0 0 0 2px;
+ border-radius: 2px;
+ border: 2px solid transparent;
+}
