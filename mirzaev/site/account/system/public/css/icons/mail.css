@@ -1,0 +1,30 @@
+i.mail,
+i.mail::after {
+ --width: 18px;
+ --height: 14px;
+ height: 14px;
+ display: block;
+ box-sizing: border-box;
+ border: 2px solid;
+}
+
+i.mail {
+ position: relative;
+ width: 18px;
+ overflow: hidden;
+ border-radius: 2px;
+}
+
+i.mail::after {
+ position: absolute;
+ left: 0;
+ bottom: 3px;
+ width: 14px;
+ transform: rotate(-45deg);
+ content: "";
+ border-radius: 3px;
+} 
+
+i.mail+input {
+  padding-left: 36px;
+}

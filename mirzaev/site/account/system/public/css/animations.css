@@ -1,0 +1,23 @@
+@keyframes input-error {
+  0%,
+  20% {
+      background-color: var(--input-error);
+  }
+  
+  50%,
+  100% {
+      background-color: var(--background-above-1);
+  }
+}
+
+@keyframes uprise {
+  0% {
+    opacity: 0;
+    filter: blur(2px);
+  }
+  
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+  }
+}

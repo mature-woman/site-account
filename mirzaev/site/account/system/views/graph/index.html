@@ -3,7 +3,7 @@
 <link type="text/css" rel="stylesheet" href="/css/icon_close.css" />
 {% endblock %}
 
-{% block main %}
+{% block body %}
 {% if graph.id != empty %}
 <section id="{{ graph.id }}" class="graph unselectable" {% for name, value in graph.attributes %} {{ name }}="{{value}}"
     {% endfor %}>

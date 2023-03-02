@@ -1,54 +1,230 @@
-#authentication {
-    width           : 25vw;
-    margin          : 25vh auto;
-    padding         : 70px 40px;
-    display         : flex;
-    flex-direction  : column;
-    background-color: var(--background-light-1);
+@keyframes glare {
+    2%,
+    100% {
+        left   : 130%;
+        bottom : -200%;
+        width  : 120px;
+        opacity: 0.7;
+    }
 }
 
-#authentication>section.header {
-    width        : 100px;
-    height       : 100px;
-    margin       : auto;
-    display      : flex;
-    border-radius: 100%;
-    overflow     : hidden;
+main {
+  z-index: 1000;
+  top: 20%;
+  position: relative;
+  height: unset;
+  display: flex;
+  flex-direction: unset;
+  justify-content: center;
+  align-items: unset;
 }
 
-#authentication>section {
-    margin: unset;
-    color : #fff;
+section.panel {
+    z-index       : 1000;
+    width         : 400px;
+    position      : absolute;
+    display       : flex;
+    flex-direction: column;
 }
 
-#authentication>section.header>img {
-    width             : 90%;
-    height            : 90%;
+section.panel.medium {
+  width: 300px;
+}
+
+section.panel.small {
+    width: 220px;
+}
+
+section.panel#mnemonic {
+  margin-left: -570px;
+}
+
+section.panel#classic {
+  margin-left: 570px;
+}
+
+
+section.panel>section.body>ul {
+  margin: 0 5%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: square;
+}
+
+section.panel>section.body>ul>li {
+  font-size: 0.8rem;
+  word-break: break-word;
+  animation-duration       : .35s;
+  animation-name           : uprise;
+  animation-fill-mode      : forwards;
+  animation-timing-function: cubic-bezier(.47,0,.74,.71);
+}
+section.panel>section.header {
+    z-index           : 1000;
+    height            : 50px;
+    display           : flex;
+    justify-content: center;
+    align-items: end;
+    animation-duration: 120s;
+    border-radius     : 3px 3px 0 0;
+    background-color     : var(--background-above);
+}
+
+section#profile>section.header {
+    margin-left       : -50px;
+    height            : 100px;
+    padding           : 30px 0;
+    clip-path         : url(#profile-header-mask);
+}
+
+section#profile>section.header>img.avatar {
+    z-index           : 1500;
+    left              : 6px;
+    top               : 36px;
+    width             : 88px;
+    height            : 88px;
+    position          : absolute;
     margin            : auto;
     object-fit        : cover;
     border-radius     : 100%;
-    box-shadow        : 1px 0px 12px 0px rgba(0, 0, 0, 1);
-    -webkit-box-shadow: 1px 0px 12px 0px rgba(0, 0, 0, 1);
-    -moz-box-shadow   : 1px 0px 12px 0px rgba(0, 0, 0, 1);
+    cursor            : pointer;
+    image-rendering   : smooth;
+    box-shadow        : 0px 0px 12px 0px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow   : 0px 0px 12px 0px rgba(0, 0, 0, 0.5);
 }
 
-#authentication>:is(b, a) {
-    margin-left: 15%;
+section#profile>section.header>img.avatar:hover {
+    left              : 0;
+    top               : 30px;
+    width             : 100px;
+    height            : 100px;
+    box-shadow        : 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow   : 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
 }
 
-#authentication>b {
-    margin-top: 30px;
-    font-size : 1.2em;
+section#profile>section.header>img.cover {
+    z-index        : -5000;
+    left           : -50px;
+    top            : 0;
+    position       : absolute;
+    width          : calc(100% + 100px);
+    height         : 100%;
+    object-position: 0px 30%;
+    object-fit     : cover;
+    clip-path      : polygon(50px 0, calc(100% - 50px) 0, calc(100% - 50px) 100%, 50px 100%);
+    border-radius  : 0 0 3px 3px;
+    background     : var(--background-above);
 }
 
-#authentication>ul {
-    margin-left: 25%;
+section#profile>section.header>div.glare {
+    z-index                  : 3000;
+    left                     : -30px;
+    top                      : -300px;
+    width                    : 30px;
+    height                   : 400%;
+    position                 : absolute;
+    rotate                   : 25deg;
+    opacity                  : 0.2;
+    filter                   : unset;
+    pointer-events           : none;
+    animation-name           : glare;
+    animation-duration       : 32s;
+    animation-delay          : 2s;
+    animation-fill-mode      : forwards;
+    animation-timing-function: linear;
+    background-color         : #fff;
 }
 
-#authentication ul ul {
+section#profile>section.header>div {
+    animation-duration: 80s;
+}
+
+section#profile>section.header>a {
+    margin        : auto;
+    width         : 100%;
+    margin-left   : 110px;
+    padding-bottom: 0.5ex;
+    white-space   : nowrap;
+    overflow-x    : hidden;
+    text-overflow : ellipsis;
+    font-size     : 1.3em;
+    font-weight   : bold;
+    color         : var(--text-inverse);
+    text-shadow   : 0 0 8px #00000080;
+}
+
+section.panel>section.header>:is(h1, h2, h3) {
+  margin-bottom: unset;
+}
+
+section.panel>section.body {
+    padding              : 20px 30px;
+    gap                  : 10px;
+    display              : flex;
+    flex-direction       : column;
+    border-radius        : 0 0 3px 3px;
+    background-color     : var(--background-above);
+}
+
+section#profile>section.body>ul {
+    margin       : unset;
+    margin-left  : 10%;
+}
+
+section#profile>section.body ul ul {
     padding-top: 1ex;
 }
 
-#authentication ul li:not(:last-child) {
+section#profile>section.body ul li:not(:last-child) {
     margin-bottom: 1ex;
+}
+
+section#profile>section.body div.buttons {
+    margin-top: 10px;
+    display: flex;
+}
+
+section#profile>section.body div.buttons>button {
+    padding         : 1ex 2ex;
+    cursor          : pointer;
+    border-radius   : 3px;
+    font-size       : 0.9em;
+    background-color: unset;
+}
+
+section#profile>section.body div.buttons>button:hover {
+    color: var(--text-hover);
+}
+
+section#profile>section.body div.buttons>button:active {
+    color     : var(--text-active);
+    transition: unset;
+}
+
+section#profile>section.body div.buttons>button:first-of-type {
+    margin-left : auto;
+    margin-right: 5%;
+}
+
+section#profile>section.body div.buttons>button:last-of-type {
+    margin-right: auto;
+}
+
+section#profile>section.body div.buttons>button.accept {
+    padding         : 1ex 5ex;
+    color           : var(--text-inverse);
+    background-color: #63954d;
+}
+
+section#profile>section.body div.buttons>button.accept:hover {
+    color           : var(--text-inverse-above);
+    background-color: #6fa259;
+}
+
+section#profile>section.body div.buttons>button.accept:active {
+    background-color: #63954d;
 }

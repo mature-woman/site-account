@@ -1,9 +1,4 @@
 @keyframes red {
-    from {
-        left: -250%;
-        top : -300%;
-    }
-
     25% {
         left: -240%;
         top : -130%;
@@ -19,18 +14,13 @@
         top : -230%;
     }
 
-    to {
+    100% {
         left: -250%;
         top : -300%;
     }
 }
 
 @keyframes blue {
-    from {
-        left: -280%;
-        top : -80%;
-    }
-
     25% {
         left: -180%;
         top : -100%;
@@ -46,18 +36,13 @@
         top : -300%;
     }
 
-    to {
+    100% {
         left: -280%;
         top : -80%;
     }
 }
 
 @keyframes green {
-    from {
-        left: -180%;
-        top : -100%;
-    }
-
     25% {
         left: -120%;
         top : -250%;
@@ -73,17 +58,13 @@
         top : -80%;
     }
 
-    to {
+    100% {
         left: -180%;
         top : -100%;
     }
 }
 
-@keyframes background {
-    from {
-        background-color: #ff5c5c;
-    }
-
+@keyframes wrap-background {
     25% {
         background-color: #9395ff;
     }
@@ -96,47 +77,56 @@
         background-color: #534eff;
     }
 
-    to {
+    100% {
         background-color: #ff5c5c;
     }
 }
 
-#authentication>section.header.gradient {
+:is(div, section).gradient {
     position                 : relative;
     overflow                 : hidden;
     animation-duration       : 30s;
-    animation-name           : background;
+    animation-name           : wrap-background;
     animation-iteration-count: infinite;
     background-repeat        : no-repeat;
     animation-timing-function: ease-in-out;
+    background-color         : #ff5c5c;
 }
 
-#authentication>section.header.gradient>div {
+:is(div, section).gradient>div:not(.gradient) {
     z-index                  : -1000;
     width                    : 500%;
     height                   : 500%;
     position                 : absolute;
+    pointer-events           : none;
+    filter                   : blur(200px);
     animation-duration       : 12s;
     background-repeat        : no-repeat;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
 }
 
-#authentication>section.header.gradient>div.red {
+:is(div, section).gradient>div.red {
+    left          : -250%;
+    top           : -300%;
     animation-name: red;
     background-image: radial-gradient(circle,
             rgba(255, 25, 25, 1) 0%,
             rgba(0, 0, 0, 0) 35%);
 }
 
-#authentication>section.header.gradient>div.blue {
+:is(div, section).gradient>div.blue {
+    left          : -280%;
+    top           : -80%;
     animation-name: blue;
     background-image: radial-gradient(circle,
             rgba(25, 25, 255, 0.6) 0%,
             rgba(0, 0, 0, 0) 35%);
 }
 
-#authentication>section.header.gradient>div.green {
+:is(div, section).gradient>div.green {
+    left          : -180%;
+    top           : -100%;
     animation-name: green;
     background-image: radial-gradient(circle,
             rgba(25, 255, 25, 1) 0%,

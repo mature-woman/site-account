@@ -1,0 +1,48 @@
+i.keyhole,
+i.keyhole::after,
+i.keyhole::before {
+ display: block;
+ box-sizing: border-box;
+ border-radius: 20px;
+}
+
+i.keyhole {
+ --width: 20px;
+ --height: 20px;
+ position: relative;
+ width: 20px;
+ height: 20px;
+ border: 2px solid;
+}
+
+i.keyhole::after,
+i.keyhole::before {
+ position: absolute;
+ content: '';
+}
+
+i.keyhole::before {
+ left: 5px;
+ top: 3px;
+ width: 6px;
+ height: 6px;
+ border: 2px solid;
+}
+
+i.keyhole::after {
+  left: 7px;
+  bottom: 3px; 
+  width: 2px;
+  height: 5px;
+  background: currentColor;
+} 
+
+label>i.keyhole:first-child {
+  left: 7px;
+  scale: .9;
+  border: 2.1px solid;
+}
+
+i.keyhole+input {
+  padding-left: 34px;
+}
