@@ -22,7 +22,7 @@ trait errors
 
       // Проверка на вложенность и запись в буфер вывода (вход в рекурсию)
       if (isset($error['text'])) $buffer[] = $error['text'];
-      else if (is_array($error)) $buffer[$offset] = static::parse_only_text($error);
+      else if (is_array($error) && count($error) > 0) $buffer[$offset] = static::parse_only_text($error);
     }
 
     return $buffer;

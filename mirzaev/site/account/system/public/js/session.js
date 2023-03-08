@@ -6,12 +6,12 @@ class session {
    *
    * Записывает входной псевдоним в сессию, а так же проверяет существование аккаунта с ним
    *
-   * @param {string} login Входной
+   * @param {string} login Входной псевдоним
    *
    * @return {object} {(bool) exist, (array) errors}
    */
   static async login(login) {
-    // Запрос
+    // Запрос к серверу
     return await fetch('https://account.mirzaev.sexy/session/login', {
       method: 'POST',
       headers: {
@@ -32,16 +32,16 @@ class session {
    *
    * @param {string} password Пароль
    *
-   * @return {object} {(bool) verify, (array) errors}
+   * @return {object} {(bool) verify, (bool) account, (array) errors}
    */
   static async password(password) {
-    // Запрос
+    // Запрос к серверу
     return await fetch('https://account.mirzaev.sexy/session/password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: `password=${password}&return=verify,errors`
+      body: `password=${password}&remember=1&return=verify,account,errors`
     })
       .then((response) => response.json())
       .then((data) => {
@@ -59,7 +59,7 @@ class session {
    * @return {object} {(bool) exist, (array) from, (array) errors}
    */
   static async invite(invite) {
-    // Запрос
+    // Запрос к серверу
     return await fetch("https://account.mirzaev.sexy/session/invite", {
       method: "POST",
       headers: {
@@ -69,6 +69,16 @@ class session {
     })
       .then((response) => response.json())
       .then((data) => {
+        if (data.exist === false) {
+          // Не найдено приглашение
+
+          // Инициализация категории ошибок
+          if (typeof data.errors.session === 'undefined') data.errors.session = [];
+
+          // Запись ошибки
+          data.errors.session.push('Не найдено приглашение');
+        }
+
         return data;
       });
   }

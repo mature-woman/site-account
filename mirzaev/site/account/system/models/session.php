@@ -31,7 +31,7 @@ final class session extends core
   public const COLLECTION = 'session';
 
   /**
-   * Данные сессии из базы данных 
+   * Инстанция документа сессии в базе данных 
    */
   public _document $document;
 
@@ -42,7 +42,7 @@ final class session extends core
    *
    * @param ?string $hash Хеш сессии в базе данных
    * @param ?int $expires Дата окончания работы сессии (используется при создании новой сессии)
-   * @param array &$errors Журнал ошибок
+   * @param array &$errors Реестр ошибок
    *
    * @return static Инстанция сессии
    */
@@ -55,8 +55,8 @@ final class session extends core
         if (isset($hash) && $session = collection::search(static::$db->session, sprintf(
           <<<AQL
             FOR d IN %s
-            FILTER d.hash == '$hash' && d.expires > %d
-            RETURN d
+              FILTER d.hash == '$hash' && d.expires > %d && d.status == 'active'
+              RETURN d
           AQL,
           self::COLLECTION,
           time()
@@ -68,8 +68,8 @@ final class session extends core
         } else if ($session = collection::search(static::$db->session, sprintf(
           <<<AQL
             FOR d IN %s
-            FILTER d.ip == '%s' && d.expires > %d
-            RETURN d
+              FILTER d.ip == '%s' && d.expires > %d && d.status == 'active'
+              RETURN d
           AQL,
           self::COLLECTION,
           $_SERVER['REMOTE_ADDR'],
@@ -84,20 +84,21 @@ final class session extends core
 
           // Запись сессии в базу данных
           $_id = document::write(static::$db->session, self::COLLECTION, [
-            'ip' => $_SERVER['REMOTE_ADDR'],
-            'expires' => $expires ?? time() + 604800
+            'status' => 'active',
+            'expires' => $expires ?? time() + 604800,
+            'ip' => $_SERVER['REMOTE_ADDR']
           ]);
 
           if ($session = collection::search(static::$db->session, sprintf(
             <<<AQL
               FOR d IN %s
-              FILTER d._id == '$_id' && d.expires > %d
-              RETURN d
+                FILTER d._id == '$_id' && d.expires > %d && d.status == 'active'
+                RETURN d
             AQL,
             self::COLLECTION,
             time()
           ))) {
-            // Найдена созданная сессия
+            // Найдена только что созданная сессия
 
             // Запись хеша
             $session->hash = sodium_bin2hex(sodium_crypto_generichash($_id));
@@ -112,7 +113,7 @@ final class session extends core
         }
       } else throw new exception('Не удалось инициализировать коллекцию');
     } catch (exception $e) {
-      // Запись в журнал ошибок
+      // Запись в реестр ошибок
       $errors[] = [
         'text' => $e->getMessage(),
         'file' => $e->getFile(),
@@ -128,14 +129,16 @@ final class session extends core
   }
 
   /**
-   * Связь сессии с аккаунтом
+   * Инициализировать связб сессии с аккаунтом
    *
-   * @param _document $account Инстанция аккаунта
-   * @param array &$errors Журнал ошибок
+   * Ищет связь сессии с аккаунтом, если не находит, то создаёт её
    *
-   * @return bool Статус выполнения
+   * @param account $account Инстанция аккаунта
+   * @param array &$errors Реестр ошибок
+   *
+   * @return bool Связан аккаунт?
    */
-  public function connect(_document $account, array &$errors = []): bool
+  public function connect(account $account, array &$errors = []): bool
   {
     try {
       if (
@@ -145,17 +148,30 @@ final class session extends core
       ) {
         // Инициализирована коллекция
 
-        if (document::write(static::$db->session, self::COLLECTION . '_edge_' . account::COLLECTION, [
-          '_from' => $this->document->getId(),
-          '_to' => $account->getId()
-        ])) {
-          // Создано ребро: session -> account
+        if (
+          collection::search(static::$db->session, sprintf(
+            <<<AQL
+              FOR document IN %s
+                FILTER document._from == '%s' && document._to == '%s'
+                LIMIT 1
+                RETURN document
+            AQL,
+            self::COLLECTION . '_edge_' . account::COLLECTION,
+            $this->document->getId(),
+            $account->getId()
+          )) instanceof _document
+          || document::write(static::$db->session, self::COLLECTION . '_edge_' . account::COLLECTION, [
+            '_from' => $this->document->getId(),
+            '_to' => $account->getId()
+          ])
+        ) {
+          // Найдено, либо создано ребро: session -> account
 
           return true;
         } else throw new exception('Не удалось создать ребро: session -> account');
       } else throw new exception('Не удалось инициализировать коллекцию');
     } catch (exception $e) {
-      // Запись в журнал ошибок
+      // Запись в реестр ошибок
       $errors[] = [
         'text' => $e->getMessage(),
         'file' => $e->getFile(),
@@ -168,13 +184,13 @@ final class session extends core
   }
 
   /**
-   * Поиск связанного аккаунта
+   * Найти связанный аккаунт
    *
-   * @param array &$errors Журнал ошибок
+   * @param array &$errors Реестр ошибок
    *
-   * @return ?_document Инстанция аккаунта, если удалось найти
+   * @return ?account Инстанция аккаунта, если удалось найти
    */
-  public function account(array &$errors = []): ?_document
+  public function account(array &$errors = []): ?account
   {
     try {
       if (
@@ -184,31 +200,34 @@ final class session extends core
       ) {
         // Инициализированы коллекции
 
-        if ($account = collection::search(static::$db->session, sprintf(
+        // Инициализация инстанции аккаунта
+        $account = new account;
+
+        // Поиск инстанции аккаунта в базе данных
+        $account->document = collection::search(static::$db->session, sprintf(
           <<<AQL
             FOR document IN %s
-            LET edge = (
-              FOR edge IN %s
-              FILTER edge._from == '%s'
-              SORT edge._key DESC
+              LET edge = (
+                FOR edge IN %s
+                FILTER edge._from == '%s'
+                SORT edge._key DESC
+                LIMIT 1
+                RETURN edge
+              )
+              FILTER document._id == edge[0]._to
               LIMIT 1
-              RETURN edge
-            )
-            FILTER document._id == edge[0]._to
-            LIMIT 1
-            RETURN document
+              RETURN document
           AQL,
           account::COLLECTION,
           self::COLLECTION . '_edge_' . account::COLLECTION,
-          $this->document->getId()
-        ))) {
-          // Найден аккаунт
+          $this->getId()
+        ));
 
-          return $account;
-        } else throw new exception('Не удалось найти аккаунт');
+        if ($account->document instanceof _document) return $account;
+        else throw new exception('Не удалось найти инстанцию аккаунта в базе данных');
       } else throw new exception('Не удалось инициализировать коллекцию');
     } catch (exception $e) {
-      // Запись в журнал ошибок
+      // Запись в реестр ошибок
       $errors[] = [
         'text' => $e->getMessage(),
         'file' => $e->getFile(),
@@ -218,6 +237,47 @@ final class session extends core
     }
 
     return null;
+  }
+
+  /**
+   * Записать в буфер сессии
+   *
+   * @param array $data Данные для записи
+   * @param array &$errors Реестр ошибок
+   *
+   * @return bool Записаны данные в буфер сессии?
+   */
+  public function write(array $data, array &$errors = []): bool
+  {
+    try {
+      if (collection::init(static::$db->session, self::COLLECTION)) {
+        // Инициализирована коллекция
+
+        // Проверка инициализированности инстанции документа из базы данных
+        if (!isset($this->document)) throw new exception('Не инициализирована инстанция документа из базы данных');
+
+        // Запись параметров в инстанцию документа из базы данных
+        $this->document->buffer = array_replace_recursive($this->document->buffer ?? [], $data);
+
+        if (document::update(static::$db->session, $this->document)) {
+          // Записано обновление
+
+          return true;
+        }
+
+        throw new exception('Не удалось записать данные в буфер сессии');
+      } else throw new exception('Не удалось инициализировать коллекцию');
+    } catch (exception $e) {
+      // Запись в реестр ошибок
+      $errors[] = [
+        'text' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stack' => $e->getTrace()
+      ];
+    }
+
+    return false;
   }
 
   /**
@@ -287,6 +347,6 @@ final class session extends core
    */
   public function __call(string $name, array $arguments = [])
   {
-    if (method_exists($this, $name)) return $this->document->{$name}($arguments);
+    if (method_exists($this->document, $name)) return $this->document->{$name}($arguments);
   }
 }

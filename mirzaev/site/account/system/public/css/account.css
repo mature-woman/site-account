@@ -19,12 +19,23 @@ main {
   align-items: unset;
 }
 
+div.column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 section.panel {
+    --display     : flex;
     z-index       : 1000;
     width         : 400px;
     position      : absolute;
     display       : flex;
     flex-direction: column;
+}
+
+div.column>section.panel {
+    position      : unset;
 }
 
 section.panel.medium {
@@ -43,7 +54,6 @@ section.panel#classic {
   margin-left: 570px;
 }
 
-
 section.panel>section.body>ul {
   margin: 0 5%;
   padding: 0;
@@ -61,6 +71,34 @@ section.panel>section.body>ul>li {
   animation-fill-mode      : forwards;
   animation-timing-function: cubic-bezier(.47,0,.74,.71);
 }
+
+section.panel>section.body>dl {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+section.panel>section.body>dl>* {
+  word-break: break-word;
+  animation-duration       : .35s;
+  animation-name           : uprise;
+  animation-fill-mode      : forwards;
+  animation-timing-function: cubic-bezier(.47,0,.74,.71);
+}
+
+section.panel>section.body>dl>dt {
+  margin-left: 20px;
+  display: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+section.panel>section.body>dl>dd {
+  margin-left: unset;
+  font-size: 0.8rem;
+}
+
 section.panel>section.header {
     z-index           : 1000;
     height            : 50px;

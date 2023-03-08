@@ -5,20 +5,16 @@ declare(strict_types=1);
 namespace mirzaev\site\account\controllers;
 
 // Файлы проекта
-use mirzaev\site\account\views\templater;
-use mirzaev\site\account\models\core as models;
-use mirzaev\site\account\models\account;
-use mirzaev\site\account\models\session;
-
-// Библиотека для ArangoDB
-use ArangoDBClient\Document as _document;
+use mirzaev\site\account\views\templater,
+  mirzaev\site\account\models\core as models,
+  mirzaev\site\account\models\account,
+  mirzaev\site\account\models\session;
 
 // Фреймворк PHP
 use mirzaev\minimal\controller;
 
-// Фреймворк ВКонтакте
-use mirzaev\vk\core as vk;
-use mirzaev\vk\robots\user as robot;
+// Встроенные библиотеки
+use exception;
 
 /**
  * Ядро контроллеров
@@ -28,11 +24,6 @@ use mirzaev\vk\robots\user as robot;
  */
 class core extends controller
 {
-  /**
-   * Переменные окружения
-   */
-  protected robot $vk;
-
   /**
    * Инстанция сессии
    */
@@ -59,45 +50,46 @@ class core extends controller
   /**
    * Конструктор
    *
-   * @return void
+   * @param bool $initialize Инициализировать контроллер?
    */
-  public function __construct()
+  public function __construct(bool $initialize = true)
   {
-    parent::__construct();
+    parent::__construct($initialize);
 
-    // Инициализация ядра моделей (соединение с базой данных...)
-    new models();
+    if ($initialize) {
+      // Запрошена инициализация
 
-    // Инициализация шаблонизатора представлений
-    $this->view = new templater;
+      // Инициализация ядра моделей (соединение с базой данных...)
+      new models();
 
-    // Инициализация даты до которой будет активна сессия
-    $expires = time() + 604800;
+      // Инициализация даты до которой будет активна сессия
+      $expires = time() + 604800;
 
-    // Инициализация сессии (без журналирования)
-    $this->session = new session($_COOKIE["session"] ?? null, $expires) ??
-      header('Location: https://mirzaev.sexy/error?code=500&text=Не+удалось+инициализировать+сессию');
+      // Инициализация значения по умолчанию
+      $_COOKIE["session"] ??= null;
 
-    if ($_COOKIE["session"] ?? null !== $this->session->hash) {
-      // Изменился хеш сессии (подразумевается, что сессия устарела)
+      // Инициализация сессии
+      $this->session = new session($_COOKIE["session"], $expires);
 
-      // Запись хеша новой сессии
-      setcookie('session', $this->session->hash, [
-        'expires' => $expires,
-        'domain' => 'mirzaev.sexy',
-        'path' => '/',
-        'secure' => true,
-        'httponly' => true,
-        'samesite' => 'strict'
-      ]);
-    }
+      if ($_COOKIE["session"] !== $this->session->hash) {
+        // Изменился хеш сессии (подразумевается, что сессия устарела)
 
-    // Инициализация аккаунта (без журналирования)
-    $this->account = $this->session->account();
+        // Запись хеша новой сессии
+        setcookie('session', $this->session->hash, [
+          'expires' => $expires,
+          'domain' => 'mirzaev.sexy',
+          'path' => '/',
+          'secure' => true,
+          'httponly' => true,
+          'samesite' => 'strict'
+        ]);
+      }
 
-    if ($this->account instanceof _document) {
-      // Инициализирован аккаунт
+      // Инициализация аккаунта
+      $this->account = new account($this->session);
 
+      // Инициализация шаблонизатора представлений
+      $this->view = new templater($this->session, $this->account);
     }
   }
 }

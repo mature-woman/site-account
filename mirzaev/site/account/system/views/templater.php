@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace mirzaev\site\account\views;
 
 // Файлы проекта
+use mirzaev\site\account\models\session,
+  mirzaev\site\account\models\account;
+
+// Фреймворк PHP
 use mirzaev\minimal\controller;
 
 // Шаблонизатор представлений
@@ -37,13 +41,15 @@ final class templater extends controller implements ArrayAccess
    *
    * @return void
    */
-  public function __construct()
+  public function __construct(?session &$session = null, ?account &$account = null)
   {
     // Инициализация шаблонизатора
     $this->twig = new twig(new FilesystemLoader(VIEWS));
 
     // Инициализация глобальных переменных
     $this->twig->addGlobal('cookie', $_COOKIE);
+    if (isset($session->document)) $this->twig->addGlobal('session', $session);
+    if (isset($account->document)) $this->twig->addGlobal('account', $account);
   }
 
   /**

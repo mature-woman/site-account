@@ -27,7 +27,7 @@ final class password extends core
    * Сгенерировать мнемонический пароль
    *
    * @param int $length Длина (количество слов)
-   * @param array &$errors Журнал ошибок
+   * @param array &$errors Реестр ошибок
    *
    * @return ?string Пароль
    */
@@ -107,7 +107,7 @@ final class password extends core
 
       return implode(' ', $password);
     } catch (exception $e) {
-      // Запись в журнал ошибок
+      // Запись в реестр ошибок
       $errors[] = [
         'text' => $e->getMessage(),
         'file' => $e->getFile(),
@@ -123,7 +123,7 @@ final class password extends core
    * Сгенерировать классический пароль
    *
    * @param int $length Длина (количество символов)
-   * @param array &$errors Журнал ошибок
+   * @param array &$errors Реестр ошибок
    *
    * @return ?string Пароль
    */
@@ -145,7 +145,7 @@ final class password extends core
 
       return $password;
     } catch (exception $e) {
-      // Запись в журнал ошибок
+      // Запись в реестр ошибок
       $errors[] = [
         'text' => $e->getMessage(),
         'file' => $e->getFile(),

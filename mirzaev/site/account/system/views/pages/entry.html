@@ -1,0 +1,410 @@
+{% block css %}
+<link type="text/css" rel="stylesheet" href="/css/account.css">
+<link type="text/css" rel="stylesheet" href="/css/icons/arrow_right.css">
+<link type="text/css" rel="stylesheet" href="/css/icons/nametag.css">
+<link type="text/css" rel="stylesheet" href="/css/icons/keyhole.css">
+<link type="text/css" rel="stylesheet" href="/css/icons/user_add.css">
+{% endblock %}
+
+{% block body %}
+<div class="column">
+  <section id="entry" class="panel medium">
+    <section class="header unselectable">
+      <h1>Идентификация</h1>
+    </section>
+    <section class="body">
+      <label id="login">
+        <i class="nametag"></i>
+        <input name="login" type="text" placeholder="Входной псевдоним"
+          value="{{ account.login ?? session.buffer.login ?? cookie.buffer_login }}"
+          onkeypress="if (event.keyCode === 13) __login()" autofocus>
+        <button class="accept" onclick="__login()"><i class="arrow right"></i></button>
+      </label>
+      <label id="password" class="hidden">
+        <i class="keyhole"></i>
+        <input name="password" type="password" placeholder="Пароль" autocomplete="current-password"
+          onkeypress="if (event.keyCode === 13) __password()">
+        <button class="accept" onclick="__password()"><i class="arrow right"></i></button>
+      </label>
+      <label id="invite" class="hidden">
+        <i class="user add"></i>
+        <input name="invite" type="text" placeholder="Ключ приглашения"
+          onkeypress="if (event.keyCode === 13) __invite()">
+        <button class="accept" onclick="__invite()"><i class="arrow right"></i></button>
+      </label>
+    </section>
+  </section>
+  <section id="errors" class="panel medium animation window hidden" style="--height: 300px">
+    <section class="body">
+      <dl></dl>
+    </section>
+  </section>
+</div>
+<section id="mnemonic" class="panel small hidden">
+  <section class="header unselectable">
+    <h2>Мнемонические</h2>
+  </section>
+  <section class="body">
+    <ul></ul>
+  </section>
+</section>
+<section id="classic" class="panel small hidden">
+  <section class="header unselectable">
+    <h2>Классические</h2>
+  </section>
+  <section class="body">
+    <ul></ul>
+  </section>
+</section>
+<script>
+  // Инициализация функций в глобальной области видимости
+  let _login, __login, _password, __password, _invite, __invite, _errors;
+
+  document.addEventListener('damper.initialized', function (e) {
+    // Инициализирован демпфер
+
+    // Инициализация HTML-элемента с блоком входа в аккаунт
+    const entry = {wrap: document.getElementById('entry')};
+    entry.title = entry.wrap.getElementsByTagName('h1')[0];
+
+    // Инициализация HTML-элемента с блоком мнемонических паролей
+    const mnemonic = {wrap: document.getElementById('mnemonic')};
+    mnemonic.list = mnemonic.wrap.getElementsByTagName('ul')[0];
+
+    // Инициализация HTML-элемента с блоком классических паролей
+    const classic = {wrap: document.getElementById('classic')};
+    classic.list = classic.wrap.getElementsByTagName('ul')[0];
+
+    // Инициализация HTML-элемента с блоком ошибок
+    const errors = {wrap: document.getElementById('errors')};
+    errors.list = errors.wrap.getElementsByTagName('dl')[0];
+
+    // Инициализация HTML-элементов-оболочек полей ввода
+    const labels = {
+      login: {label: document.getElementById('login')},
+      password: {label: document.getElementById('password')},
+      invite: {label: document.getElementById('invite')}
+    };
+    labels.login.input = labels.login.label.querySelector('input[name=login]');
+    labels.password.input = labels.password.label.querySelector('input[name=password]');
+    labels.invite.input = labels.invite.label.querySelector('input[name=invite]');
+
+    /**
+     * Отправить входной псевдоним на сервер
+     *
+     * @return {void}
+     */
+    _login = e.detail.damper(async () => {
+      // Деинициализация индикатора и анимации об ошибке
+      labels.login.input.classList.remove('error');
+
+      // Запрос к серверу
+      const response = await session.login(labels.login.input.value);
+
+      if (_errors(response.errors)) {
+        // Сгенерированы ошибки
+
+        // Разлокировка поля ввода
+        labels.login.input.disabled = false;;
+
+        // Инициализация отображения ошибки
+        labels.login.input.classList.add('error');
+
+        // Фокусировка на поле ввода
+        labels.login.input.focus();
+      } else {
+        // Не сгенерированы ошибки (подразумевается их отсутствие)
+
+        if (typeof response.exist === 'boolean')
+          if (response.exist) {
+            // Найден аккаунт
+
+            // Инициализация интерфейса аутентификации
+            entry.title.innerText = 'Аутентификация';
+            labels.login.label.classList.add('hidden');
+            labels.password.label.classList.remove('hidden');
+            labels.password.input.focus();
+          } else {
+            // Не найден аккаунт
+
+            // Инициализация интерфейса регистрации
+            entry.title.innerText = 'Регистрация';
+            labels.login.label.classList.add('hidden');
+            labels.invite.label.classList.remove('hidden');
+            labels.invite.input.focus();
+          }
+      }
+    }, 500);
+
+    /**
+     * Отправить входной псевдоним на сервер с дополнительной подготовкой
+     *
+     * @return {void}
+     */
+    __login = () => {
+      // Блокировка поля ввода
+      labels.login.input.disabled = true;
+
+      // Реинициализация блока ошибок
+      _errors();
+
+      // Запуск процесса отправки входного псевдонима
+      _login();
+    }
+
+    /**
+     * Отправить пароль на сервер
+     *
+     * @return {void}
+     */
+    _password = e.detail.damper(async () => {
+      // Деинициализация индикатора и анимации об ошибке
+      labels.password.input.classList.remove('error');
+
+      // Запрос к серверу
+      const response = await session.password(labels.password.input.value);
+
+      if (_errors(response.errors)) {
+        // Сгенерированы ошибки
+
+        // Разлокировка поля ввода
+        labels.password.input.disabled = false;
+
+        // Инициализация отображения ошибки
+        labels.password.input.classList.add('error');
+
+        // Фокусировка на поле ввода
+        labels.password.input.focus();
+      } else {
+        // Не сгенерированы ошибки (подразумевается их отсутствие)
+
+        if (typeof response.verify === 'boolean')
+          if (response.verify) {
+            // Пройдена проверка пароля на соответствие требованиям
+
+            if (response.account) {
+              // Инициализирован аккаунт
+              
+              
+            }
+          }
+      }
+    }, 500);
+
+    /**
+     * Отправить пароль на сервер с дополнительной подготовкой
+     *
+     * @return {void}
+     */
+    __password = () => {
+      // Блокировка поля ввода
+      labels.password.input.disabled = true;
+
+      // Реинициализация блока ошибок
+      _errors();
+
+      // Запуск процесса отправки входного псевдонима
+      _password();
+    }
+
+    /**
+     * Отправить код приглашения на сервер
+     *
+     * @return {void}
+     */
+    _invite = e.detail.damper(async () => {
+      // Деинициализация индикатора и анимации об ошибке
+      labels.invite.input.classList.remove('error');
+
+      // Запрос к серверу
+      const response = await session.invite(labels.invite.input.value);
+
+      if (_errors(response.errors)) {
+        // Сгенерированы ошибки
+
+        // Разблокировка поля ввода
+        labels.invite.input.disabled = false;
+
+        // Инициализация отображения ошибки
+        labels.invite.input.classList.add('error');
+
+        // Фокусировка на поле ввода
+        labels.invite.input.focus();
+      } else {
+        // Не сгенерированы ошибки (подразумевается их отсутствие)
+
+        if (typeof response.exist === 'boolean')
+          if (response.exist) {
+            // Найдено приглашение
+
+            // Инициализация интерфейса ввода пароля
+            labels.invite.label.classList.add('hidden');
+            labels.password.input.autocomplete = 'new-password';
+            labels.password.label.classList.remove('hidden');
+            mnemonic.wrap.classList.remove('hidden');
+            classic.wrap.classList.remove('hidden');
+
+            for (let i = 0; i < 6; i++) {
+              // Генерация HTML-элементов с примерами мнемонических паролей
+
+              // Инициализация HTML-элемента
+              const element = document.createElement('li');
+
+              // Генерация пароля
+              password.generate(Math.floor(Math.random() * 3) + 2, 'mnemonic')
+                .then((responce) => {
+                  if (responce.password === '') {
+                    // Не удалось сгенерировать пароль
+
+                    // Перезапуск итерации
+                    --i;
+                    return;
+                  }
+
+                  // Запись пароля
+                  element.innerText = responce.password;
+
+                  // Запись HTML-элемента с паролем в список
+                  mnemonic.list.appendChild(element);
+
+                  // Генерация списка с текстом ошибок
+                  _errors(response.errors);
+                });
+            }
+
+            for (let i = 0; i < 8; i++) {
+              // Генерация HTML-элементов с примерами классических паролей
+
+              // Инициализация HTML-элемента
+              const element = document.createElement('li');
+
+              // Генерация пароля
+              password.generate(Math.floor(Math.random() * 14) + 4)
+                .then((responce) => {
+                  if (responce.password === '') {
+                    // Не удалось сгенерировать пароль
+
+                    // Перезапуск итерации
+                    --i;
+                    return;
+                  }
+
+                  // Запись пароля
+                  element.innerText = responce.password;
+
+                  // Запись HTML-элемента с паролем в список
+                  classic.list.appendChild(element);
+
+                  // Генерация списка с текстом ошибок
+                  _errors(response.errors);
+                });
+            }
+          }
+      }
+    }, 500);
+
+    /**
+     * Отправить код приглашения на сервер с дополнительной подготовкой
+     *
+     * @return {void}
+     */
+    __invite = () => {
+      // Блокировка поля ввода
+      labels.invite.input.disabled = true;
+
+      // Реинициализация блока ошибок
+      _errors();
+
+      // Запуск процесса отправки входного псевдонима
+      _invite();
+    }
+
+    /**
+     * Сгенерировать HTML-элемент с блоком ошибок
+     *
+     * @param {object} registry Реестр ошибок
+     * @param {bool} reinitialization Реинициализировать?
+     *
+     * @return {bool} Сгенерированы ошибки?
+     */
+    _errors = (registry, reinitialization = true) => {
+      function height() {
+        // Скрытие HTML-элемента
+        errors.wrap.style.zIndex = '-99999';
+        errors.wrap.style.left = '-99999px';
+        errors.wrap.style.top = '-99999px';
+        errors.wrap.style.position = 'absolute';
+        errors.wrap.style.display = 'var(--display, unset)';
+        errors.wrap.style.opacity = '0';
+        errors.wrap.style.animationName = 'unset';
+
+        // Реинициализация переменной с данными о высоте HTML-элемента
+        errors.wrap.style.setProperty('--height', errors.wrap.offsetHeight + 'px');
+
+        // Отмена скрытия HTML-элемента
+        errors.wrap.style.zIndex =
+          errors.wrap.style.left =
+          errors.wrap.style.top =
+          errors.wrap.style.position =
+          errors.wrap.style.display =
+          errors.wrap.style.opacity =
+          errors.wrap.style.animationName = null;
+      }
+
+      // Удаление ошибок из прошлой генерации
+      if (reinitialization) errors.list.innerHTML = null;
+
+      for (error in registry) {
+        // Генерация HTML-элементов с текстами ошибок
+
+        // Инициализация HTML-элемента
+        const element = document.createElement('dd');
+
+        if (typeof registry[error] === 'object') {
+          // Категория ошибок
+
+          // Проверка наличия ошибок
+          if (registry[error].length === 0) continue;
+
+          // Инициализация HTML-элемента
+          const element = document.createElement('dt');
+
+          // Запись текста категории
+          element.innerText = error;
+
+          // Запись HTML-элемента в список
+          errors.list.appendChild(element);
+
+          // Реинициализация высоты
+          height();
+
+          // Обработка вложенных ошибок (вход в рекурсию)
+          _errors(registry[error], false);
+        } else {
+          // Текст ошибки (подразумевается)
+
+          // Запись текста ошибки
+          element.innerText = registry[error];
+
+          // Запись HTML-элемента в список
+          errors.list.appendChild(element);
+
+          // Реинициализация высоты
+          height();
+        }
+      }
+
+      // Реинициализация HTML-элемента с текстом ошибок
+      if (reinitialization && errors.list.childElementCount === 0) errors.wrap.classList.add('hidden');
+      else errors.wrap.classList.remove('hidden');
+
+      return errors.list.childElementCount === 0 ? false : true;
+    };
+  });
+</script>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="/js/session.js"></script>
+<script type="text/javascript" src="/js/password.js"></script>
+{% endblock %}

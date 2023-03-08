@@ -33,18 +33,30 @@ class core extends model
    */
   protected static connection $db;
 
-  public function __construct(connection $db = null)
+  /**
+   * Конструктор
+   *
+   * @param bool $initialize Инициализировать контроллер?
+   * @param connection $db Инстанция соединения с базой данных
+   */
+  public function __construct(bool $initialize = true, connection $db = null)
   {
-    if (isset($db)) {
-      // Получена инстанция соединения с базой данных
+    parent::__construct($initialize);
 
-      // Запись и инициализация соединения с базой данных
-      $this->__set('db', $db);
-    } else {
-      // Не получена инстанция соединения с базой данных
+    if ($initialize) {
+      // Запрошена инициализация
 
-      // Инициализация соединения с базой данных по умолчанию
-      $this->__get('db');
+      if (isset($db)) {
+        // Получена инстанция соединения с базой данных
+
+        // Запись и инициализация соединения с базой данных
+        $this->__set('db', $db);
+      } else {
+        // Не получена инстанция соединения с базой данных
+
+        // Инициализация соединения с базой данных по умолчанию
+        $this->__get('db');
+      }
     }
   }
 

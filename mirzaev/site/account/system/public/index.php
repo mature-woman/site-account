@@ -39,11 +39,7 @@ $router->write('/session/password', 'session', 'password', 'POST');
 $router->write('/session/invite', 'session', 'invite', 'POST');
 
 // Инициализация ядра
-$core = new core(namespace: __NAMESPACE__, router: $router);
-
-// Инициализация ядер
-$core->controller = new controller;
-$core->model = new model;
+$core = new core(namespace: __NAMESPACE__, router: $router, controller: new controller(false), model: new model(false));
 
 // Обработка запроса
 echo $core->start();

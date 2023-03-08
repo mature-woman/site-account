@@ -31,15 +31,15 @@ final class invite extends core
   public const COLLECTION = 'invite';
 
   /**
-   * Инстанция в базе данных
+   * Инстанция документа приглашения в базе данных
    */
-  public ?_document $instance;
+  public ?_document $document;
 
   /**
    * Прочитать
    *
    * @param string $invite Ключ приглашения
-   * @param array &$errors Журнал ошибок
+   * @param array &$errors Реестр ошибок
    *
    * @return ?self Инстанция приглашения, если оно найдено
    */
@@ -53,25 +53,24 @@ final class invite extends core
         $instance = new self;
 
         // Поиск приглашения
-        $instance->instance = collection::search(
+        $instance->document = collection::search(
           static::$db->session,
           sprintf(
             <<<AQL
               FOR d IN %s
-              FILTER d.key == '%s' && d.active == true
-              RETURN d
+                FILTER d.key == '%s' && d.active == true
+                RETURN d
             AQL,
             self::COLLECTION,
             $invite
           )
         );
 
-        return $instance;
-      }
-
-      throw new exception('Не удалось инициализировать коллекцию');
+        if ($instance->document instanceof _document) return $instance;
+        else throw new exception('Не удалось найти инстанцию приглашения в базе данных');
+      } throw new exception('Не удалось инициализировать коллекцию');
     } catch (exception $e) {
-      // Запись в журнал ошибок
+      // Запись в реестр ошибок
       $errors[] = [
         'text' => $e->getMessage(),
         'file' => $e->getFile(),
@@ -85,6 +84,6 @@ final class invite extends core
 
   public function from(): ?account
   {
-    return new account();
+    return null;
   }
 }

@@ -53,7 +53,7 @@ final class api extends core
         default => throw new exception("Параметр не найден: $parameter")
       };
     } catch (exception $e) {
-      // Запись в журнал ошибок
+      // Запись в реестр ошибок
       $this->errors[] = [
         'text' => $e->getMessage(),
         'file' => $e->getFile(),

@@ -9,6 +9,7 @@ class password {
    * @return {object} {(string) password, (array) errors}
    */
   static async generate(length = 12, type = "classic") {
+    // Запрос к серверу
     return await fetch("https://account.mirzaev.sexy/api/generate/password", {
       method: "POST",
       headers: {

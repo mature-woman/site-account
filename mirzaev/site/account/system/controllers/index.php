@@ -24,7 +24,9 @@ final class index extends core
   {
     // Инициализация узлов
     $this->view->nodes = [
-      'account' => $this->view->render(DIRECTORY_SEPARATOR . 'nodes' . DIRECTORY_SEPARATOR . (isset($this->account) ? 'profile.html' : 'authentication.html'))
+      'account' => $this->view->render(DIRECTORY_SEPARATOR . (isset($this->account->document)
+        ? 'nodes' . DIRECTORY_SEPARATOR . 'profile.html'
+        : 'pages' . DIRECTORY_SEPARATOR . 'entry.html'))
       /* 'account' => $this->view->render(DIRECTORY_SEPARATOR . 'nodes' . DIRECTORY_SEPARATOR . (isset($this->account) ? 'profile.html' : 'connect.html')) */
     ];
 
